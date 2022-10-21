@@ -68,7 +68,7 @@ const cardPattern = {
 
         return findMask
     }
-    
+
 }
 const cardNumberMasked = IMask(cardNumber, cardPattern)
 
@@ -89,4 +89,59 @@ function setCardType(type) {
     searchVisaImg.setAttribute("src", `cc-${type}.svg`)
 }
 
-setCardType("default")
+globalThis.setCardType = setCardType;
+
+// Adicionando eventListener nos botões para pegar os dados através do innerText//
+const addButton = document.querySelector("#add-card")
+addButton.addEventListener("click", () => {
+    alert(" Cartão adicionado com sucesso!")
+});
+
+document.querySelector("form").addEventListener("submit", (event) => {
+    event.preventDefault()
+});
+
+const cardHolder = document.querySelector("#card-holder")
+cardHolder.addEventListener("input", () => {
+    const ccHolder = document.querySelector(".cc-holder .value")
+    // Utilizar if ternário//
+    //                                          se igual a 0 mostra "Fulano ..." senão, mostra cardHolder.value//
+    ccHolder.innerText = cardHolder.value.length === 0 ? " Fulano Da Silva" : cardHolder.value;
+});
+
+// Criando parte do cvc //
+
+securityCodeMasked.on("accept", () => {
+    updateSecurityCode(securityCodeMasked.value)
+});
+
+function updateSecurityCode(code) {
+    const ccSecurity = document.querySelector(".cc-security .value")
+    ccSecurity.innerText = code.length === 0 ? "123" : code
+}
+
+cardNumberMasked.on("accept", () => {
+    // Descobrindo qual bandeira por meio do numero que está sendo preenchido //
+    const cardType = cardNumberMasked.masked.currentMask.cardtype;
+    setCardType(cardType);
+    updateCardNumber(cardNumberMasked.value)
+
+});
+
+// Chamar esta function acima //
+function updateCardNumber(number) {
+    const ccNumber = document.querySelector(".cc-number")
+    ccNumber.innerText = number.length === 0 ? " 1234 5678 9012 3456" : number
+};
+
+// Criando parte de expiração //
+
+expirationDateMasked.on("accept", () => {
+    updateExpirationNumber(expirationDateMasked.value)
+});
+
+function updateExpirationNumber(numberCard) {
+    const ccExpiration = document.querySelector(".cc-extra .cc-expiration .value")
+    ccExpiration.innerText = numberCard.length === 0 ? "02/32" : numberCard
+};
+
